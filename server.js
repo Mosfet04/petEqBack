@@ -6,6 +6,10 @@ const app = express();
 const port = 8000;
 
 const { specs, swaggerUi } = require('./swagger');
+const path = require('path');
+
+// Serve arquivos estáticos na pasta public
+app.use(express.static(path.join(__dirname, 'public')));
 
 dotenv.config({ path: './config/.env' });
 
