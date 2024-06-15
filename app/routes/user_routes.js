@@ -1,5 +1,178 @@
-module.exports = function(app, pool) {
+/**
+ * @swagger
+ * /user:
+ *   post:
+ *     summary: Cria um novo usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Usuário criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userResponse:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     nome:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     password:
+ *                       type: string
+ *       500:
+ *         description: Erro ao criar usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *   delete:
+ *     summary: Deleta um usuário
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do usuário a ser deletado
+ *     responses:
+ *       204:
+ *         description: Usuário deletado com sucesso
+ *       500:
+ *         description: Erro ao deletar usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ * /user/list:
+ *   get:
+ *     summary: Retorna uma lista de usuários
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número da página
+ *         schema:
+ *           type: integer
+ *       - name: pageLimit
+ *         in: query
+ *         description: Limite de usuários por página
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de usuários retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   nome:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   password:
+ *                     type: string
+ *                   selfieLink:
+ *                     type: string
+ *                   membroAtivo:
+ *                     type: boolean
+ *       500:
+ *         description: Erro ao retornar lista de usuários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ * /user/update:
+ *   put:
+ *     summary: Atualiza um usuário existente
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         description: ID do usuário a ser atualizado
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               selfieLink:
+ *                 type: string
+ *               membroAtivo:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userResponse:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     nome:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     password:
+ *                       type: string
+ *                     selfieLink:
+ *                       type: string
+ *                     membroAtivo:
+ *                       type: boolean
+ *       500:
+ *         description: Erro ao atualizar usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 
+
+module.exports = function(app, pool) {
+	
 	app.post('/user', (req, res) => {
 		const userRequest = {
 			nome: req.body.nome,

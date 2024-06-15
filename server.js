@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 const app = express();
 const port = 8000;
 
+const { specs, swaggerUi } = require('./swagger');
+
 dotenv.config({ path: './config/.env' });
 
 // Configuração do Pool do PostgreSQL
@@ -16,6 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Suas rotas e outros middlewares podem ir aqui
 require('./app/routes')(app, pool);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Inicia o servidor Express
 app.listen(port, () => {
