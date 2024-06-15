@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 const { specs, swaggerUi } = require('./swagger');
 const path = require('path');
@@ -15,7 +15,8 @@ dotenv.config({ path: './config/.env' });
 
 // Configuração do Pool do PostgreSQL
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
+  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +28,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Inicia o servidor Express
 app.listen(port, () => {
-  console.log('Server running on port ' + port);
+  console.log(`Server running on port ${port}`);
 });
 
 // Tenta conectar ao banco de dados PostgreSQL
